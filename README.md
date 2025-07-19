@@ -50,7 +50,7 @@ A comprehensive Laravel-based billing and management system designed specificall
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/minecraft-hosting-billing.git
+git clone https://github.com/anshpatel2/minecraft-hosting-billing.git
 cd minecraft-hosting-billing
 ```
 
