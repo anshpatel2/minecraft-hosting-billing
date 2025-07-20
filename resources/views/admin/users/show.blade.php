@@ -202,38 +202,91 @@
             @endif
 
             <!-- Quick Actions -->
-            <div class="admin-card mt-8">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg admin-card mt-8">
                 <h4 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-6">Quick Actions</h4>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <a href="{{ route('admin.users.edit', $user) }}" class="admin-quick-action">
-                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <a href="{{ route('admin.users.edit', $user) }}" class="admin-quick-action text-blue-600 dark:text-blue-400">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                         </svg>
                         <span>Edit User</span>
                     </a>
                     
-                    <button class="admin-quick-action text-red-600 dark:text-red-400">
+                    <button class="admin-quick-action text-red-600 dark:text-red-400" onclick="confirmDeleteUser()">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                         </svg>
                         <span>Delete User</span>
                     </button>
                     
-                    <button class="admin-quick-action text-yellow-600 dark:text-yellow-400">
+                    <button class="admin-quick-action text-yellow-600 dark:text-yellow-400" onclick="resetUserPassword()">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                         </svg>
                         <span>Reset Password</span>
                     </button>
                     
-                    <button class="admin-quick-action text-green-600 dark:text-green-400">
+                    <a href="mailto:{{ $user->email }}" class="admin-quick-action text-green-600 dark:text-green-400">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 7.89a2 2 0 002.83 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                         </svg>
                         <span>Send Email</span>
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </x-admin-layout>
+
+<script>
+function confirmDeleteUser() {
+    if (confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+        // Create a form and submit it for user deletion
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ route("admin.users.destroy", $user) }}';
+        
+        // Add CSRF token
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = '_token';
+        csrfInput.value = '{{ csrf_token() }}';
+        form.appendChild(csrfInput);
+        
+        // Add method spoofing for DELETE
+        const methodInput = document.createElement('input');
+        methodInput.type = 'hidden';
+        methodInput.name = '_method';
+        methodInput.value = 'DELETE';
+        form.appendChild(methodInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+function resetUserPassword() {
+    if (confirm('Are you sure you want to reset this user\'s password? A new temporary password will be generated.')) {
+        // Add your password reset logic here
+        fetch('{{ route("admin.users.reset-password", $user) }}', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(`Password reset successfully!\n\nNew temporary password: ${data.new_password}\n\nPlease save this password and share it with the user securely.`);
+            } else {
+                alert('Error resetting password. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error resetting password. Please try again.');
+        });
+    }
+}
+</script>

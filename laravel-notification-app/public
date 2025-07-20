@@ -1,0 +1,2 @@
+composer create-project --prefer-dist laravel/laravel laravel-notification-system
+cd laravel-notification-system

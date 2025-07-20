@@ -1,0 +1,160 @@
+/* Enhanced Notification Styles */
+.notification-btn {
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.notification-btn:hover {
+    transform: scale(1.05);
+}
+
+.notification-badge {
+    font-size: 0.75rem;
+    line-height: 1;
+    padding: 0.25rem 0.5rem;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notification-badge.animate-pulse {
+    animation: notificationPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes notificationPulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.1);
+    }
+}
+
+/* Dark mode notification styles */
+[data-theme="dark"] .notification-dropdown {
+    background-color: var(--admin-bg-secondary) !important;
+    border-color: var(--admin-border) !important;
+    box-shadow: var(--admin-shadow-xl);
+}
+
+[data-theme="dark"] .notification-dropdown .border-b {
+    border-color: var(--admin-border) !important;
+}
+
+[data-theme="dark"] .notification-dropdown .bg-gray-50 {
+    background-color: var(--admin-lighter) !important;
+}
+
+[data-theme="dark"] .notification-dropdown .text-gray-900 {
+    color: var(--admin-text) !important;
+}
+
+[data-theme="dark"] .notification-dropdown .text-gray-600 {
+    color: var(--admin-text-light) !important;
+}
+
+[data-theme="dark"] .notification-dropdown .text-gray-500 {
+    color: var(--admin-text-light) !important;
+}
+
+[data-theme="dark"] .notification-dropdown .bg-blue-50 {
+    background-color: rgba(59, 130, 246, 0.1) !important;
+}
+
+[data-theme="dark"] .notification-dropdown .border-l-blue-500 {
+    border-left-color: #3b82f6 !important;
+}
+
+/* Theme toggle enhancement */
+#themeToggle {
+    transition: all 0.2s ease;
+}
+
+#themeToggle:hover {
+    transform: rotate(15deg);
+}
+
+[data-theme="dark"] #themeToggle {
+    color: var(--admin-text);
+}
+
+[data-theme="dark"] #themeToggle:hover {
+    color: var(--admin-primary-light);
+}
+
+/* Quick actions hover effects */
+.quick-actions a,
+.quick-actions button {
+    transition: all 0.2s ease;
+}
+
+.quick-actions a:hover,
+.quick-actions button:hover {
+    color: var(--admin-primary) !important;
+    transform: translateY(-1px);
+}
+
+[data-theme="dark"] .quick-actions a:hover,
+[data-theme="dark"] .quick-actions button:hover {
+    color: var(--admin-primary-light) !important;
+}
+
+/* Notification dropdown positioning and animation */
+.notification-dropdown {
+    animation: slideIn 0.2s ease-out;
+    max-width: 320px;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Notification type icons */
+.notification-type-icon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+}
+
+.notification-type-user-verified {
+    background-color: #10b981;
+    color: white;
+}
+
+.notification-type-plan-purchased {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.notification-type-admin-message {
+    background-color: #8b5cf6;
+    color: white;
+}
+
+.notification-type-system {
+    background-color: #6b7280;
+    color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .notification-dropdown {
+        width: 300px;
+        right: -1rem;
+    }
+}

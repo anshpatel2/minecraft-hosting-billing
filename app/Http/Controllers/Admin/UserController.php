@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
@@ -158,6 +159,26 @@ class UserController extends Controller
         }
 
         return redirect()->route('admin.users')->with('success', 'User updated successfully!');
+    }
+
+    public function resetPassword(User $user)
+    {
+        // Generate a new random password
+        $newPassword = Str::random(12);
+        
+        // Update the user's password
+        $user->update([
+            'password' => bcrypt($newPassword),
+        ]);
+
+        // You could also send an email notification here
+        // notification('Password has been reset for user: ' . $user->email);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Password reset successfully for {$user->name}",
+            'new_password' => $newPassword
+        ]);
     }
 
     public function destroy(User $user)

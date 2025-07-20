@@ -47,4 +47,20 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get the count of unread notifications for this user.
+     */
+    public function getUnreadNotificationsCountAttribute()
+    {
+        return $this->unreadNotifications()->count();
+    }
+
+    /**
+     * Check if user has any unread notifications.
+     */
+    public function hasUnreadNotifications()
+    {
+        return $this->unreadNotifications()->exists();
+    }
 }

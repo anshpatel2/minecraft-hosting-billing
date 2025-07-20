@@ -38,8 +38,14 @@ Route::middleware(['auth', 'verified', 'role:Admin'])->prefix('admin')->name('ad
     
     // Notifications
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/overview', [NotificationController::class, 'overview'])->name('notifications.overview');
+    Route::get('/notifications/global', [NotificationController::class, 'globalNotifications'])->name('notifications.global');
+    Route::get('/notifications/create', [NotificationController::class, 'create'])->name('notifications.create');
+    Route::post('/notifications/send', [NotificationController::class, 'send'])->name('notifications.send');
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.readAll');
+    Route::delete('/notifications/{id}', [NotificationController::class, 'delete'])->name('notifications.delete');
+    Route::post('/notifications/bulk-action', [NotificationController::class, 'bulkAction'])->name('notifications.bulkAction');
 });
 
 // Reseller Routes  
@@ -64,4 +70,5 @@ Route::middleware(['auth', 'verified', 'role:Customer,Reseller,Admin'])->prefix(
     })->name('billing');
 });
 
+require __DIR__.'/auth.php';
 require __DIR__.'/auth.php';
