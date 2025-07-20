@@ -1,0 +1,156 @@
+/* Global Navigation Responsive Styles */
+
+/* Mobile-first approach */
+@media (max-width: 767px) {
+    .global-nav .nav-link {
+        font-size: 0.9rem;
+        padding: 0.75rem 1rem;
+    }
+    
+    .global-nav .nav-link::after {
+        display: none; /* Hide underline animation on mobile */
+    }
+    
+    .mobile-menu {
+        max-height: calc(100vh - 4rem);
+        overflow-y: auto;
+    }
+    
+    .hero-gradient h1 {
+        font-size: 2.5rem !important;
+        line-height: 1.2;
+    }
+    
+    .hero-gradient p {
+        font-size: 1.1rem !important;
+    }
+    
+    .glass-card {
+        padding: 1.5rem !important;
+        margin-bottom: 1rem;
+    }
+}
+
+/* Tablet styles */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .global-nav .nav-link {
+        font-size: 0.95rem;
+        padding: 0.75rem 1.25rem;
+    }
+    
+    .hero-gradient h1 {
+        font-size: 3.5rem !important;
+    }
+    
+    .glass-card {
+        padding: 2rem !important;
+    }
+}
+
+/* Desktop styles */
+@media (min-width: 1024px) {
+    .global-nav .nav-link:hover {
+        transform: translateY(-1px);
+    }
+    
+    .glass-card:hover {
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+}
+
+/* Ultra-wide screens */
+@media (min-width: 1920px) {
+    .hero-gradient h1 {
+        font-size: 5rem !important;
+    }
+    
+    .hero-gradient p {
+        font-size: 1.5rem !important;
+    }
+}
+
+/* Landscape mobile orientation */
+@media (max-width: 767px) and (orientation: landscape) {
+    .hero-gradient {
+        padding-top: 3rem !important;
+        padding-bottom: 3rem !important;
+    }
+    
+    .py-20 {
+        padding-top: 3rem !important;
+        padding-bottom: 3rem !important;
+    }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .glass-card {
+        -webkit-backdrop-filter: blur(20px);
+        backdrop-filter: blur(20px);
+    }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    .transition-all,
+    .transition-colors,
+    .transition-opacity,
+    .nav-link,
+    .glass-card {
+        transition: none !important;
+        animation: none !important;
+        transform: none !important;
+    }
+    
+    .nav-link::after {
+        transition: none !important;
+    }
+}
+
+/* Dark mode responsive adjustments */
+@media (prefers-color-scheme: dark) {
+    .glass-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .dropdown-menu {
+        background: rgba(31, 41, 55, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* Focus states for accessibility */
+.nav-link:focus,
+.nav-link:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.8);
+    outline-offset: 2px;
+    border-radius: 0.375rem;
+}
+
+button:focus,
+button:focus-visible,
+a:focus,
+a:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+    .global-nav,
+    footer {
+        display: none !important;
+    }
+    
+    .hero-gradient {
+        background: white !important;
+        color: black !important;
+    }
+    
+    .glass-card {
+        background: white !important;
+        border: 1px solid #e5e7eb !important;
+        box-shadow: none !important;
+    }
+}

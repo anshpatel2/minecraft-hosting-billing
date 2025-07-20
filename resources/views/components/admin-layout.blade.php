@@ -19,12 +19,15 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         
+        <!-- Alpine.js -->
+        <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+        
         <!-- Admin Theme CSS -->
         <link href="{{ asset('assets/css/admin-theme.css') }}" rel="stylesheet">
         <link href="{{ asset('assets/css/datatables.min.css') }}" rel="stylesheet">
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100 admin-content">
+        <div class="min-h-screen bg-gray-100 admin-content" x-data="{ open: false }">
             <!-- Admin Navigation -->
             <nav class="admin-header bg-white border-b border-gray-200">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -45,85 +48,59 @@
                                 <x-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users*')">
                                     {{ __('Users') }}
                                 </x-nav-link>
-                                <x-nav-link href="#" :active="false">
+                                <x-nav-link :href="route('admin.manage.plans')" :active="request()->routeIs('admin.manage.plans')">
+                                    {{ __('Plans') }}
+                                </x-nav-link>
+                                <x-nav-link :href="route('admin.manage.orders')" :active="request()->routeIs('admin.manage.orders')">
+                                    {{ __('Orders') }}
+                                </x-nav-link>
+                                <x-nav-link :href="route('admin.manage.servers')" :active="request()->routeIs('admin.manage.servers')">
                                     {{ __('Servers') }}
                                 </x-nav-link>
-                                <x-nav-link href="#" :active="false">
+                                <x-nav-link :href="route('admin.manage.billing')" :active="request()->routeIs('admin.manage.billing')">
                                     {{ __('Billing') }}
                                 </x-nav-link>
-                                <x-nav-link href="#" :active="false">
-                                    {{ __('Settings') }}
+                                <x-nav-link :href="route('admin.manage.users')" :active="request()->routeIs('admin.manage.users')">
+                                    {{ __('User Management') }}
                                 </x-nav-link>
-                            </div>
-                        </div>
 
-                        <!-- Settings Dropdown -->
-                        <div class="hidden sm:flex sm:items-center sm:ml-6">
-                            <!-- Quick Actions -->
-                            <div class="flex items-center space-x-4 mr-4">
-                                <!-- Theme Toggle -->
-                                <button id="theme-toggle" class="theme-toggle" title="Toggle Dark Mode">
-                                    <svg class="sun-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                                    </svg>
-                                    <svg class="moon-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                                    </svg>
-                                </button>
-
-                                <!-- Main Site Link -->
-                                <a href="{{ route('dashboard') }}" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-colors" title="Main Site">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                                    </svg>
-                                </a>
-
-                                <!-- Notifications -->
-                                <div class="relative">
-                                    <button id="notification-btn" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-colors" title="Notifications">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5-5V9a3 3 0 10-6 0v3l-5 5h5a3 3 0 106 0z"></path>
+                                <!-- Notifications Dropdown -->
+                                <div class="relative ml-3" x-data="{ open: false }">
+                                    <button @click="open = !open" class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">
+                                        {{ __('Notifications') }}
+                                        <svg class="w-4 h-4 ml-1 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                         </svg>
-                                        @php
-                                            $unreadCount = auth()->user()->unreadNotifications->count();
-                                        @endphp
-                                        @if($unreadCount > 0)
-                                            <span id="notification-badge" class="notification-badge">{{ $unreadCount }}</span>
-                                        @endif
                                     </button>
                                     
-                                    <!-- Notification Dropdown -->
-                                    <div id="notification-dropdown" class="notification-dropdown">
-                                        <div class="p-4 border-b border-gray-200 dark:border-gray-600">
-                                            <div class="flex items-center justify-between">
-                                                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Notifications</h3>
-                                                <button onclick="adminTheme.markAllAsRead()" class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
-                                                    Mark all read
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div id="notification-list" class="max-h-96 overflow-y-auto">
-                                            <!-- Notifications will be loaded here -->
-                                        </div>
-                                        <div class="p-4 border-t border-gray-200 dark:border-gray-600">
-                                            <a href="{{ route('admin.notifications.index') }}" class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">View all notifications</a>
+                                    <div x-show="open" @click.away="open = false" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                                        <div class="py-1">
+                                            <x-nav-link :href="route('admin.notifications.overview')" :active="request()->routeIs('admin.notifications.overview')">
+                                                {{ __('Overview') }}
+                                            </x-nav-link>
+                                            <x-nav-link :href="route('admin.notifications.index')" :active="request()->routeIs('admin.notifications.index')">
+                                                {{ __('My Notifications') }}
+                                            </x-nav-link>
+                                            <x-nav-link :href="route('admin.notifications.global')" :active="request()->routeIs('admin.notifications.global')">
+                                                {{ __('Global Notifications') }}
+                                            </x-nav-link>
+                                            <x-nav-link :href="route('admin.notifications.create')" :active="request()->routeIs('admin.notifications.create')">
+                                                {{ __('Send Notification') }}
+                                            </x-nav-link>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
+                        <!-- Settings and User Menu -->
+                        <div class="hidden sm:flex sm:items-center sm:ml-6">
+                            <!-- Settings Dropdown -->
                             <x-dropdown align="right" width="48">
                                 <x-slot name="trigger">
                                     <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                                        <div class="flex items-center">
-                                            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-sm mr-2">
-                                                {{ substr(Auth::user()->name, 0, 1) }}
-                                            </div>
-                                            <div class="text-left">
-                                                <div class="font-medium text-sm text-gray-800">{{ Auth::user()->name }}</div>
-                                                <div class="font-medium text-xs text-gray-500">Administrator</div>
-                                            </div>
-                                        </div>
+                                        <div>{{ Auth::user()->name }}</div>
+
                                         <div class="ml-1">
                                             <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -140,6 +117,7 @@
                                     <!-- Authentication -->
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
+
                                         <x-dropdown-link :href="route('logout')"
                                                 onclick="event.preventDefault();
                                                             this.closest('form').submit();">
@@ -171,6 +149,21 @@
                         <x-responsive-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users*')">
                             {{ __('Users') }}
                         </x-responsive-nav-link>
+                        <x-responsive-nav-link :href="route('admin.manage.plans')" :active="request()->routeIs('admin.manage.plans')">
+                            {{ __('Plans') }}
+                        </x-responsive-nav-link>
+                        <x-responsive-nav-link :href="route('admin.manage.orders')" :active="request()->routeIs('admin.manage.orders')">
+                            {{ __('Orders') }}
+                        </x-responsive-nav-link>
+                        <x-responsive-nav-link :href="route('admin.manage.servers')" :active="request()->routeIs('admin.manage.servers')">
+                            {{ __('Servers') }}
+                        </x-responsive-nav-link>
+                        <x-responsive-nav-link :href="route('admin.manage.billing')" :active="request()->routeIs('admin.manage.billing')">
+                            {{ __('Billing') }}
+                        </x-responsive-nav-link>
+                        <x-responsive-nav-link :href="route('admin.manage.users')" :active="request()->routeIs('admin.manage.users')">
+                            {{ __('User Management') }}
+                        </x-responsive-nav-link>
                     </div>
 
                     <!-- Responsive Settings Options -->
@@ -188,6 +181,7 @@
                             <!-- Authentication -->
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
+
                                 <x-responsive-nav-link :href="route('logout')"
                                         onclick="event.preventDefault();
                                                     this.closest('form').submit();">
@@ -200,13 +194,13 @@
             </nav>
 
             <!-- Page Heading -->
-            @isset($header)
+            @if (isset($header))
                 <header class="bg-white shadow">
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
                 </header>
-            @endisset
+            @endif
 
             <!-- Page Content -->
             <main>

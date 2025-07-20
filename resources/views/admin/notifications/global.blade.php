@@ -2,15 +2,21 @@
     $pageTitle = 'All Notifications';
 @endphp
 
-<x-admin-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('All Notifications') }}
-        </h2>
-    </x-slot>
+<x-modern-layout title="All Notifications">
+    <!-- Page Header -->
+    <div class="relative overflow-hidden bg-gradient-to-br from-slate-600 via-gray-700 to-slate-800 mb-8">
+        <div class="absolute inset-0 bg-black/20"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="text-center">
+                <h1 class="text-4xl font-bold text-white mb-3">All Notifications</h1>
+                <p class="text-slate-200 text-lg">Global notification management system</p>
+            </div>
+        </div>
+    </div>
 
-<div x-data="globalNotifications()" class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <!-- Content -->
+    <div x-data="globalNotifications()" class="py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="mb-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg admin-card">
@@ -528,4 +534,5 @@ function globalNotifications() {
         </div>
     </div>
 @endforeach
-</x-admin-layout>
+    </div>
+</x-modern-layout>

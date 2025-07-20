@@ -191,4 +191,10 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('admin.users')->with('success', 'User deleted successfully!');
     }
+
+    public function list()
+    {
+        $users = User::select('id', 'name', 'email')->get();
+        return response()->json($users);
+    }
 }

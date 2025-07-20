@@ -1,24 +1,35 @@
-<x-admin-layout>
-    <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                {{ __('Create New User') }}
-            </h2>
-            <a href="{{ route('admin.users') }}" class="admin-btn admin-btn-secondary">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-                Back to Users
-            </a>
+<x-modern-layout title="Create New User">
+    <!-- Page Header -->
+    <div class="modern-card">
+        <div class="card-header">
+            <div class="card-title">
+                <div class="card-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <div>
+                    <h1>Create New User</h1>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Add a new user to the system</p>
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <a href="{{ route('admin.users') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Users
+                </a>
+            </div>
         </div>
-    </x-slot>
+    </div>
 
-    <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <!-- Page Header -->
-            <div class="admin-card mb-8">
-                <div class="flex items-center space-x-4">
-                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+    <!-- Create Form -->
+    <div class="modern-card">
+        <div class="card-header">
+            <div class="card-title">
+                <div class="card-icon" style="background: var(--gradient-success);">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                User Information
+            </div>
+        </div>
                         <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
                         </svg>
@@ -164,21 +175,16 @@
                 <!-- Form Actions -->
                 <div class="admin-card">
                     <div class="flex justify-end space-x-4">
-                        <a href="{{ route('admin.users') }}" class="admin-btn admin-btn-secondary">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
+                        <a href="{{ route('admin.users') }}" class="btn btn-secondary">
+                            <i class="fas fa-times mr-2"></i>
                             Cancel
                         </a>
-                        <button type="submit" class="admin-btn admin-btn-primary">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                            </svg>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-plus mr-2"></i>
                             Create User
                         </button>
                     </div>
                 </div>
             </form>
-        </div>
     </div>
-</x-admin-layout>
+</x-modern-layout>

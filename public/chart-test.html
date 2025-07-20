@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chart.js Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .chart-container { width: 400px; height: 300px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <h1>Chart.js Test</h1>
+    <div class="chart-container">
+        <canvas id="testChart"></canvas>
+    </div>
+    
+    <!-- Test with CDN first -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <script>
+        console.log('Chart.js loaded:', typeof Chart !== 'undefined');
+        
+        if (typeof Chart !== 'undefined') {
+            const ctx = document.getElementById('testChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                    datasets: [{
+                        label: '# of Votes',
+                        data: [12, 19, 3, 5, 2, 3],
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            console.log('Test chart created successfully');
+        } else {
+            document.body.innerHTML += '<p style="color: red;">Chart.js failed to load!</p>';
+        }
+    </script>
+</body>
+</html>

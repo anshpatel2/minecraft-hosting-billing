@@ -2,28 +2,27 @@
     $pageTitle = 'Send Notification';
 @endphp
 
-<x-admin-layout>
-    <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                {{ __('Send Notification') }}
-            </h2>
-            <div class="flex items-center space-x-3">
-                <a href="{{ route('admin.notifications.index') }}" class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                    View All
-                </a>
-                <a href="{{ route('admin.notifications.overview') }}" class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                    </svg>
-                    Overview
-                </a>
+<x-modern-layout title="Send Notification">
+    <!-- Page Header -->
+    <div class="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 mb-8">
+        <div class="absolute inset-0 bg-black/20"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div class="mb-6 md:mb-0">
+                    <h1 class="text-4xl font-bold text-white mb-3">Send Notification</h1>
+                    <p class="text-indigo-100 text-lg">Create and send notifications to users</p>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <a href="{{ route('admin.notifications.index') }}" class="inline-flex items-center px-6 py-3 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-lg border border-white/20 hover:bg-white/20 transition-all duration-200">
+                        <i class="fas fa-list mr-2"></i>View All Notifications
+                    </a>
+                    <a href="{{ route('admin.notifications.overview') }}" class="inline-flex items-center px-6 py-3 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-lg border border-white/20 hover:bg-white/20 transition-all duration-200">
+                        <i class="fas fa-chart-bar mr-2"></i>Overview
+                    </a>
+                </div>
             </div>
         </div>
-    </x-slot>
+    </div>
 
 <div x-data="notificationForm()" class="py-6">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -400,4 +399,5 @@ function notificationForm() {
     }
 }
 </script>
-</x-admin-layout>
+    </div>
+</x-modern-layout>

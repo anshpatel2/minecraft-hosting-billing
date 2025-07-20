@@ -1,0 +1,331 @@
+/* Global Navigation Responsive Styles */
+
+/* Base responsive typography */
+@media (max-width: 640px) {
+    .global-nav h1 {
+        font-size: 1.5rem;
+    }
+    
+    .global-nav p {
+        font-size: 0.875rem;
+    }
+    
+    .hero-gradient h1 {
+        font-size: 2rem;
+    }
+    
+    .hero-gradient p {
+        font-size: 1rem;
+    }
+}
+
+/* Enhanced mobile menu animations */
+@media (max-width: 768px) {
+    .mobile-menu {
+        max-height: calc(100vh - 4rem);
+        overflow-y: auto;
+    }
+    
+    .mobile-menu-item {
+        transition: all 0.2s ease;
+        border-radius: 0.5rem;
+        margin: 0.25rem 0.5rem;
+    }
+    
+    .mobile-menu-item:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateX(0.5rem);
+    }
+    
+    .mobile-menu-item:active {
+        transform: translateX(0.25rem);
+        background: rgba(255, 255, 255, 0.25);
+    }
+}
+
+/* Card responsiveness */
+@media (max-width: 768px) {
+    .glass-card {
+        padding: 1rem;
+        margin: 0.5rem 0;
+    }
+    
+    .glass-card h3,
+    .glass-card h4 {
+        font-size: 1.125rem;
+    }
+    
+    .glass-card p {
+        font-size: 0.875rem;
+    }
+}
+
+/* Grid responsiveness */
+@media (max-width: 640px) {
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+    .grid.md\:grid-cols-2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .grid.lg\:grid-cols-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Footer responsiveness */
+@media (max-width: 768px) {
+    footer .grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    footer .col-span-2 {
+        grid-column: span 1;
+    }
+}
+
+/* Navigation hover effects enhancement */
+.nav-link {
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.nav-link:hover::before {
+    left: 100%;
+}
+
+/* Button enhancements */
+.glass-card a,
+.glass-card button {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.glass-card a::before,
+.glass-card button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease;
+}
+
+.glass-card a:hover::before,
+.glass-card button:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+/* Scroll behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Focus states for accessibility */
+.nav-link:focus,
+.glass-card a:focus,
+.glass-card button:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 2px;
+}
+
+/* Loading states */
+.loading-skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .glass-card {
+        background: rgba(0, 0, 0, 0.1);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .dropdown-menu {
+        background: rgba(0, 0, 0, 0.9);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* Print styles */
+@media print {
+    .global-nav,
+    footer,
+    .mobile-menu {
+        display: none;
+    }
+    
+    .hero-gradient {
+        background: white;
+        color: black;
+    }
+    
+    .glass-card {
+        background: white;
+        border: 1px solid #ddd;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .global-nav {
+        background: #000;
+        border-bottom: 2px solid #fff;
+    }
+    
+    .nav-link {
+        color: #fff;
+    }
+    
+    .glass-card {
+        background: #fff;
+        border: 2px solid #000;
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .nav-link::after,
+    .nav-link::before,
+    .glass-card a::before,
+    .glass-card button::before,
+    .mobile-menu-item {
+        transition: none;
+    }
+    
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Form styling enhancements */
+.form-input,
+.form-select,
+.form-textarea {
+    transition: all 0.3s ease;
+    border-radius: 0.5rem;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    outline: none;
+}
+
+/* Status indicators */
+.status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+
+.status-online {
+    background: #10b981;
+    box-shadow: 0 0 6px #10b981;
+}
+
+.status-offline {
+    background: #ef4444;
+    box-shadow: 0 0 6px #ef4444;
+}
+
+.status-maintenance {
+    background: #f59e0b;
+    box-shadow: 0 0 6px #f59e0b;
+}
+
+/* Animation utilities */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+.slide-up {
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { 
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Notification badge */
+.notification-badge {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}

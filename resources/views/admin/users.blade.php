@@ -1,41 +1,49 @@
-<x-admin-layout>
-    <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Manage Users') }}
-            </h2>
-            <a href="{{ route('admin.users.create') }}" class="admin-btn admin-btn-primary">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                </svg>
-                Add New User
-            </a>
+<x-modern-layout title="Manage Users">
+    <!-- Page Header -->
+    <div class="relative overflow-hidden bg-gradient-to-br from-gray-600 via-slate-700 to-gray-800 mb-8">
+        <div class="absolute inset-0 bg-black/20"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div class="mb-6 md:mb-0">
+                    <h1 class="text-4xl font-bold text-white mb-3">User Management</h1>
+                    <p class="text-gray-200 text-lg">Manage user accounts, roles, and permissions</p>
+                </div>
+                <div>
+                    <a href="{{ route('admin.users.create') }}" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl">
+                        <i class="fas fa-plus mr-2"></i>Add New User
+                    </a>
+                </div>
+            </div>
         </div>
-    </x-slot>
+    </div>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <!-- Content -->
+    <div class="py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Flash Messages -->
             @if(session('success'))
-                <div class="admin-alert admin-alert-success mb-4">
+                <div class="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-4 flex items-center">
+                    <i class="fas fa-check-circle mr-3 text-green-600"></i>
                     {{ session('success') }}
                 </div>
             @endif
             
             @if(session('error'))
-                <div class="admin-alert admin-alert-error mb-4">
+                <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-4 flex items-center">
+                    <i class="fas fa-exclamation-circle mr-3 text-red-600"></i>
                     {{ session('error') }}
                 </div>
             @endif
 
             @if(session('info'))
-                <div class="admin-alert admin-alert-info mb-4">
+                <div class="bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-lg mb-4 flex items-center">
+                    <i class="fas fa-info-circle mr-3 text-blue-600"></i>
                     {{ session('info') }}
                 </div>
             @endif
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="p-6">&gt;
                     <!-- Summary Statistics -->
                     <div class="dashboard-grid mb-8">
                         <div class="stats-card">
@@ -217,4 +225,10 @@
             });
         });
     </script>
-</x-admin-layout>
+    
+    @push('scripts')
+        <script>
+            // Any additional scripts for the modern layout can go here
+        </script>
+    @endpush
+</x-modern-layout>

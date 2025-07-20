@@ -1,95 +1,87 @@
 @php
-    $pageTitle = 'My Notifications';
+    $pageTitle = 'Admin Notifications';
 @endphp
 
-<x-admin-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('My Notifications') }}
-        </h2>
-    </x-slot>
+<x-modern-layout title="Admin Notifications">
+    <!-- Page Header -->
+    <div class="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 mb-8">
+        <div class="absolute inset-0 bg-black/20"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="text-center">
+                <h1 class="text-4xl font-bold text-white mb-3">Admin Notifications</h1>
+                <p class="text-indigo-100 text-lg">Manage system notifications and user communications</p>
+            </div>
+        </div>
+    </div>
 
-<div x-data="notificationManager()" class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <!-- Header -->
-        <div class="mb-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg admin-card">
-                <div class="p-6">
+    <!-- Content -->
+    <div x-data="notificationManager()" class="space-y-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Actions Header -->
+            <div class="modern-card">
+                <div class="modern-card-header">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">My Notifications</h1>
-                            <p class="text-gray-600 dark:text-gray-400 mt-1">Your personal notifications and messages</p>
+                            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Notification Management</h2>
+                            <p class="text-gray-600 dark:text-gray-400 mt-1">View and manage all system notifications</p>
                         </div>
                         <div class="flex items-center space-x-3">
-                            <a href="{{ route('admin.notifications.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                </svg>
-                                Send Notification
+                            <a href="{{ route('admin.notifications.create') }}" class="btn-primary">
+                                <i class="fas fa-plus mr-2"></i>Send Notification
                             </a>
-                            <a href="{{ route('admin.notifications.overview') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 00-2-2z"></path>
-                                </svg>
-                                Overview
+                            <a href="{{ route('admin.notifications.overview') }}" class="btn-secondary">
+                                <i class="fas fa-chart-bar mr-2"></i>Overview
                             </a>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Filters and Actions -->
-        <div class="mb-6">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg admin-card">
-                <div class="p-6">
+                <div class="modern-card-body">
+                    <!-- Filters and Search -->
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-                        <div class="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
-                            <form method="GET" class="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
-                                <div class="flex items-center space-x-2">
-                                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Filter:</label>
-                                    <select name="filter" class="rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-                                        <option value="" {{ request('filter') === '' ? 'selected' : '' }}>All</option>
-                                        <option value="unread" {{ request('filter') === 'unread' ? 'selected' : '' }}>Unread</option>
-                                        <option value="read" {{ request('filter') === 'read' ? 'selected' : '' }}>Read</option>
-                                    </select>
+                        <div class="flex items-center space-x-4">
+                            <form method="GET" class="flex items-center space-x-4">
+                                <div class="relative">
+                                    <input type="text" name="search" 
+                                           class="input-field w-64 pl-10" 
+                                           placeholder="Search notifications..." 
+                                           value="{{ request('search') }}">
+                                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                                 </div>
-                                <div class="flex items-center space-x-2">
-                                    <input type="text" name="search" class="rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:placeholder-gray-400 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Search notifications..." value="{{ request('search') }}">
-                                    <button type="submit" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                        </svg>
-                                    </button>
-                                    <a href="{{ route('admin.notifications.index') }}" class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                        Clear
-                                    </a>
-                                </div>
+                                
+                                <select name="filter" class="input-field">
+                                    <option value="" {{ request('filter') === '' ? 'selected' : '' }}>All</option>
+                                    <option value="unread" {{ request('filter') === 'unread' ? 'selected' : '' }}>Unread</option>
+                                    <option value="read" {{ request('filter') === 'read' ? 'selected' : '' }}>Read</option>
+                                </select>
+                                
+                                <button type="submit" class="btn-secondary text-xs">
+                                    <i class="fas fa-search mr-1"></i>Search
+                                </button>
+                                <a href="{{ route('admin.notifications.index') }}" class="btn-secondary text-xs">
+                                    <i class="fas fa-times mr-1"></i>Clear
+                                </a>
                             </form>
                         </div>
 
                         <!-- Bulk Actions -->
                         <div x-show="selectedNotifications.length > 0" x-transition class="flex items-center space-x-2">
                             <span class="text-sm text-gray-500 dark:text-gray-400" x-text="selectedNotifications.length + ' selected'"></span>
-                            <form method="POST" action="{{ route('admin.notifications.bulk-action') }}" x-ref="bulkForm" class="inline">
+                            <form method="POST" action="{{ route('admin.notifications.bulk-action') }}" x-ref="bulkForm" class="inline flex space-x-2">
                                 @csrf
                                 <input type="hidden" name="notification_ids" :value="selectedNotifications.join(',')">
                                 <input type="hidden" name="action" x-ref="bulkAction">
-                                <button type="button" @click="bulkMarkAsRead()" class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/50 hover:bg-blue-200 dark:hover:bg-blue-900/70 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                    Mark as Read
+                                <button type="button" @click="bulkMarkAsRead()" class="btn-success text-xs">
+                                    <i class="fas fa-check mr-1"></i>Mark as Read
                                 </button>
-                                <button type="button" @click="bulkDelete()" class="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded text-red-700 dark:text-red-300 bg-red-100 dark:bg-red-900/50 hover:bg-red-200 dark:hover:bg-red-900/70 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                                    Delete
+                                <button type="button" @click="bulkDelete()" class="btn-danger text-xs">
+                                    <i class="fas fa-trash mr-1"></i>Delete
                                 </button>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Notifications List -->
-        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg admin-card">
             @if($notifications->count() > 0)
                 <div class="divide-y divide-gray-200 dark:divide-gray-700">
                     @foreach($notifications as $notification)
@@ -254,4 +246,5 @@ function notificationManager() {
     }
 }
 </script>
-</x-admin-layout>
+    </div>
+</x-modern-layout>

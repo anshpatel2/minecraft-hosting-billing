@@ -1,24 +1,73 @@
-<x-admin-layout>
-    <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                {{ __('Edit User') }}
-            </h2>
-            <a href="{{ route('admin.users') }}" class="admin-btn admin-btn-secondary">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-                Back to Users
-            </a>
+<x-modern-layout title="Edit User">
+    <!-- Page Header -->
+    <div class="modern-card">
+        <div class="card-header">
+            <div class="card-title">
+                <div class="card-icon">
+                    <i class="fas fa-user-edit"></i>
+                </div>
+                <div>
+                    <h1>Edit User</h1>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Modify user information and permissions</p>
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <a href="{{ route('admin.users.show', $user) }}" class="btn btn-secondary">
+                    <i class="fas fa-eye"></i>
+                    View User
+                </a>
+                <a href="{{ route('admin.users') }}" class="btn btn-primary">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Users
+                </a>
+            </div>
         </div>
-    </x-slot>
+    </div>
 
-    <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <!-- Page Header -->
-            <div class="admin-card mb-8">
-                <div class="flex items-center space-x-4">
-                    <div class="w-12 h-12 bg-amber-100 dark:bg-amber-900 rounded-lg flex items-center justify-center">
+    <!-- User Profile Overview -->
+    <div class="modern-card">
+        <div class="flex items-center gap-6 mb-6">
+            <div class="w-16 h-16 bg-gradient-to-br from-yellow-500 via-orange-600 to-red-600 rounded-2xl flex items-center justify-center shadow-xl">
+                <span class="text-xl font-bold text-white">
+                    {{ strtoupper(substr($user->name, 0, 2)) }}
+                </span>
+            </div>
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">{{ $user->name }}</h2>
+                <p class="text-gray-600 dark:text-gray-400 text-lg">{{ $user->email }}</p>
+                <div class="flex items-center gap-3 mt-2">
+                    @if($user->email_verified_at)
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
+                            <i class="fas fa-check-circle mr-1"></i>
+                            Verified
+                        </span>
+                    @else
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200">
+                            <i class="fas fa-exclamation-circle mr-1"></i>
+                            Unverified
+                        </span>
+                    @endif
+                    @if($user->roles->first())
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200">
+                            <i class="fas fa-shield-alt mr-1"></i>
+                            {{ ucfirst($user->roles->first()->name) }}
+                        </span>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Form -->
+    <div class="modern-card">
+        <div class="card-header">
+            <div class="card-title">
+                <div class="card-icon" style="background: var(--gradient-primary);">
+                    <i class="fas fa-edit"></i>
+                </div>
+                User Information
+            </div>
+        </div>
                         <svg class="w-6 h-6 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                         </svg>
@@ -179,23 +228,16 @@
                 </div>
 
                 <!-- Form Actions -->
-                <div class="admin-card">
-                    <div class="flex justify-end space-x-4">
-                        <a href="{{ route('admin.users') }}" class="admin-btn admin-btn-secondary">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                            Cancel
-                        </a>
-                        <button type="submit" class="admin-btn admin-btn-primary">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
-                            </svg>
-                            Update User
-                        </button>
-                    </div>
+                <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+                    <a href="{{ route('admin.users') }}" class="btn btn-secondary">
+                        <i class="fas fa-times mr-2"></i>
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save mr-2"></i>
+                        Update User
+                    </button>
                 </div>
             </form>
-        </div>
     </div>
-</x-admin-layout>
+</x-modern-layout>

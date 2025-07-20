@@ -1,184 +1,384 @@
-<x-admin-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Admin Dashboard') }}
-        </h2>
-    </x-slot>
+<x-modern-layout title="Admin Dashboard">
+    <!-- Dashboard Header -->
+    <div class="mb-8 fade-in">
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Admin Dashboard</h1>
+        <p class="text-gray-600 dark:text-gray-400">Welcome back! Here's what's happening with your platform today.</p>
+    </div>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <!-- Welcome Section -->
-            <div class="mb-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg admin-card">
-                    <div class="p-8">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <h3 class="text-2xl font-bold text-gray-900 mb-2">Welcome back, {{ Auth::user()->name }}!</h3>
-                                <p class="text-gray-600">Here's what's happening with your Minecraft hosting platform today.</p>
-                            </div>
-                            <div class="hidden md:block">
-                                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8 fade-in">
+        <div class="stat-card">
+            <div class="stat-header">
+                <span class="stat-title">Total Users</span>
+                <div class="stat-icon" style="background: var(--gradient-primary);">
+                    <i class="fas fa-users"></i>
                 </div>
             </div>
+            <div class="stat-value">{{ \App\Models\User::count() }}</div>
+            <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i>
+                +{{ \App\Models\User::where('created_at', '>=', now()->subDays(7))->count() }} this week
+            </div>
+        </div>
 
-            <!-- Quick Stats Grid -->
-            <div class="dashboard-grid mb-8">
-                <div class="stats-card">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h4 class="text-blue-600">Total Users</h4>
-                            <p class="text-blue-900">{{ \App\Models\User::count() }}</p>
-                        </div>
-                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="stats-card">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h4 class="text-green-600">Active Servers</h4>
-                            <p class="text-green-900">0</p>
-                        </div>
-                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="stats-card">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h4 class="text-purple-600">Monthly Revenue</h4>
-                            <p class="text-purple-900">$0</p>
-                        </div>
-                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="stats-card">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h4 class="text-orange-600">Support Tickets</h4>
-                            <p class="text-orange-900">0</p>
-                        </div>
-                        <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                            </svg>
-                        </div>
-                    </div>
+        <div class="stat-card">
+            <div class="stat-header">
+                <span class="stat-title">Total Orders</span>
+                <div class="stat-icon" style="background: var(--gradient-success);">
+                    <i class="fas fa-shopping-cart"></i>
                 </div>
             </div>
-            
-            <!-- Management Sections -->
-            <div class="dashboard-grid">
-                <div class="admin-card fade-in-up">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
-                            </svg>
-                        </div>
-                        <span class="admin-badge admin-badge-primary">Active</span>
-                    </div>
-                    <h4 class="text-xl font-bold text-gray-900 mb-2">User Management</h4>
-                    <p class="text-gray-600 mb-4">Manage all users, roles, and permissions across your platform.</p>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="admin-badge admin-badge-info text-xs">{{ \App\Models\User::count() }} Total Users</span>
-                        <span class="admin-badge admin-badge-success text-xs">{{ \App\Models\User::whereNotNull('email_verified_at')->count() }} Verified</span>
-                    </div>
-                    <a href="{{ route('admin.users') }}" class="admin-btn admin-btn-primary w-full justify-center">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14l-4-4"></path>
-                        </svg>
-                        Manage Users
-                    </a>
-                </div>
-                
-                <div class="admin-card fade-in-up">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
-                            </svg>
-                        </div>
-                        <span class="admin-badge admin-badge-warning">Coming Soon</span>
-                    </div>
-                    <h4 class="text-xl font-bold text-gray-900 mb-2">Server Management</h4>
-                    <p class="text-gray-600 mb-4">Monitor and manage all Minecraft servers and their configurations.</p>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="admin-badge admin-badge-info text-xs">0 Servers</span>
-                        <span class="admin-badge admin-badge-success text-xs">0 Online</span>
-                    </div>
-                    <button class="admin-btn admin-btn-secondary w-full justify-center" disabled>
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                        </svg>
-                        Phase 3 Feature
-                    </button>
-                </div>
-                
-                <div class="admin-card fade-in-up">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                            </svg>
-                        </div>
-                        <span class="admin-badge admin-badge-warning">Coming Soon</span>
-                    </div>
-                    <h4 class="text-xl font-bold text-gray-900 mb-2">Billing Overview</h4>
-                    <p class="text-gray-600 mb-4">View all transactions, invoices, and billing management.</p>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="admin-badge admin-badge-info text-xs">$0 Revenue</span>
-                        <span class="admin-badge admin-badge-success text-xs">0 Transactions</span>
-                    </div>
-                    <button class="admin-btn admin-btn-secondary w-full justify-center" disabled>
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                        </svg>
-                        Phase 4 Feature
-                    </button>
-                </div>
+            <div class="stat-value">{{ \App\Models\Order::count() }}</div>
+            <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i>
+                +{{ \App\Models\Order::where('created_at', '>=', now()->subDays(7))->count() }} this week
             </div>
+        </div>
 
-            <!-- Permissions Section -->
-            <div class="mt-12">
-                <div class="admin-card">
-                    <div class="flex items-center justify-between mb-6">
-                        <h4 class="text-xl font-bold text-gray-900">Your Administrator Permissions</h4>
-                        <span class="admin-badge admin-badge-success">{{ auth()->user()->getAllPermissions()->count() }} Permissions</span>
-                    </div>
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                        @foreach(auth()->user()->getAllPermissions() as $permission)
-                            <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                                <svg class="w-4 h-4 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                                <span class="text-sm font-medium text-gray-700">{{ $permission->name }}</span>
-                            </div>
-                        @endforeach
-                    </div>
+        <div class="stat-card">
+            <div class="stat-header">
+                <span class="stat-title">Active Plans</span>
+                <div class="stat-icon" style="background: var(--gradient-warning);">
+                    <i class="fas fa-box"></i>
                 </div>
             </div>
+            <div class="stat-value">{{ \App\Models\Plan::where('is_active', true)->count() }}</div>
+            <div class="stat-change">
+                <i class="fas fa-equals"></i>
+                {{ \App\Models\Plan::count() }} total plans
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-header">
+                <span class="stat-title">Revenue (30d)</span>
+                <div class="stat-icon" style="background: var(--gradient-info);">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+            </div>
+            <div class="stat-value">${{ number_format(\App\Models\Order::where('status', 'completed')->where('created_at', '>=', now()->subDays(30))->sum('amount'), 2) }}</div>
+            <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i>
+                Last 30 days
             </div>
         </div>
     </div>
-</x-admin-layout>
+
+    <!-- Quick Actions -->
+    <div class="modern-card mb-8 fade-in">
+        <div class="card-header">
+            <h2 class="card-title">
+                <div class="card-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                Quick Actions
+            </h2>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Manage your platform efficiently</p>
+        </div>
+        <div class="card-body">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <a href="{{ route('admin.users') }}" class="quick-action-btn">
+                    <div class="quick-action-icon bg-blue-500">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="quick-action-content">
+                        <h4>Manage Users</h4>
+                        <p>Add, edit, and manage user accounts</p>
+                    </div>
+                </a>
+
+                <a href="{{ route('admin.orders.index') }}" class="quick-action-btn">
+                    <div class="quick-action-icon bg-green-500">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="quick-action-content">
+                        <h4>Manage Orders</h4>
+                        <p>View and process customer orders</p>
+                    </div>
+                </a>
+
+                <a href="{{ route('admin.plans.index') }}" class="quick-action-btn">
+                    <div class="quick-action-icon bg-purple-500">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="quick-action-content">
+                        <h4>Manage Plans</h4>
+                        <p>Create and edit hosting plans</p>
+                    </div>
+                </a>
+
+                <button onclick="showComingSoon('System Settings')" class="quick-action-btn text-left">
+                    <div class="quick-action-icon bg-yellow-500">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="quick-action-content">
+                        <h4>System Settings</h4>
+                        <p>Configure platform settings</p>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity & System Status -->
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8 fade-in">
+        <!-- Recent Users -->
+        <div class="modern-card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <div class="card-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    Recent Users
+                </h3>
+                <a href="{{ route('admin.users') }}" class="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors">
+                    View All <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="space-y-3">
+                    @forelse(\App\Models\User::latest()->limit(5)->get() as $user)
+                    <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                                <span class="text-white font-semibold text-sm">{{ substr($user->name, 0, 1) }}</span>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-900 dark:text-gray-100">{{ $user->name }}</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">{{ $user->email }}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded-full">
+                                {{ $user->getPrimaryRole() }}
+                            </span>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ $user->created_at->diffForHumans() }}</p>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="text-center py-8">
+                        <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-users text-gray-400 text-2xl"></i>
+                        </div>
+                        <p class="text-gray-500 dark:text-gray-400 font-medium">No users found</p>
+                        <p class="text-gray-400 dark:text-gray-500 text-sm mt-1">Users will appear here when they register</p>
+                    </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="modern-card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <div class="card-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    Recent Orders
+                </h3>
+                <a href="{{ route('admin.orders.index') }}" class="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors">
+                    View All <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="space-y-3">
+                    @forelse(\App\Models\Order::with('user', 'plan')->latest()->limit(5)->get() as $order)
+                    <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                        <div>
+                            <p class="font-medium text-gray-900 dark:text-gray-100">#{{ $order->id }} - {{ $order->user->name ?? 'Unknown User' }}</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">{{ $order->plan->name ?? 'Unknown Plan' }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-semibold text-gray-900 dark:text-gray-100">${{ number_format($order->amount, 2) }}</p>
+                            <span class="inline-flex items-center text-xs font-medium px-2 py-1 rounded-full 
+                                @if($order->status === 'active') bg-green-100 text-green-800
+                                @elseif($order->status === 'pending') bg-yellow-100 text-yellow-800
+                                @elseif($order->status === 'cancelled') bg-red-100 text-red-800
+                                @else bg-gray-100 text-gray-800
+                                @endif">
+                                {{ ucfirst($order->status) }}
+                            </span>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="text-center py-8">
+                        <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-shopping-cart text-gray-400 text-2xl"></i>
+                        </div>
+                        <p class="text-gray-500 dark:text-gray-400 font-medium">No orders found</p>
+                        <p class="text-gray-400 dark:text-gray-500 text-sm mt-1">Orders will appear here when customers make purchases</p>
+                    </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Overview -->
+    <div class="modern-card fade-in">
+        <div class="card-header">
+            <h3 class="card-title">
+                <div class="card-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                System Overview
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Real-time platform statistics</p>
+        </div>
+        <div class="card-body">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- User Distribution -->
+                <div class="text-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-100 dark:border-blue-800">
+                    <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-users text-white text-xl"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 dark:text-gray-100 mb-4">User Distribution</h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Admins:</span>
+                            <span class="font-medium">{{ \App\Models\User::whereHas('roles', function($q) { $q->where('name', 'Admin'); })->count() }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Customers:</span>
+                            <span class="font-medium">{{ \App\Models\User::whereHas('roles', function($q) { $q->where('name', 'Customer'); })->count() }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Resellers:</span>
+                            <span class="font-medium">{{ \App\Models\User::whereHas('roles', function($q) { $q->where('name', 'Reseller'); })->count() }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Status -->
+                <div class="text-center p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border border-green-100 dark:border-green-800">
+                    <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-shopping-cart text-white text-xl"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 dark:text-gray-100 mb-4">Order Status</h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Active:</span>
+                            <span class="font-medium text-green-600">{{ \App\Models\Order::where('status', 'active')->count() }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Pending:</span>
+                            <span class="font-medium text-yellow-600">{{ \App\Models\Order::where('status', 'pending')->count() }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Completed:</span>
+                            <span class="font-medium text-blue-600">{{ \App\Models\Order::where('status', 'completed')->count() }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Plan Status -->
+                <div class="text-center p-6 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl border border-purple-100 dark:border-purple-800">
+                    <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-box text-white text-xl"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 dark:text-gray-100 mb-4">Plan Status</h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Active Plans:</span>
+                            <span class="font-medium text-green-600">{{ \App\Models\Plan::where('is_active', true)->count() }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Inactive Plans:</span>
+                            <span class="font-medium text-red-600">{{ \App\Models\Plan::where('is_active', false)->count() }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">Total Plans:</span>
+                            <span class="font-medium">{{ \App\Models\Plan::count() }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Coming Soon Modal -->
+    <div id="comingSoonModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-md mx-4">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-rocket text-blue-600 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2" id="featureName">Feature Coming Soon</h3>
+                <p class="text-gray-600 dark:text-gray-400 mb-6">This feature is currently under development and will be available soon!</p>
+                <button onclick="closeComingSoonModal()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors">
+                    Got it!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    @push('styles')
+    <style>
+        .stat-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .quick-action-btn {
+            transition: all 0.2s ease-in-out;
+            border: 1px solid transparent;
+        }
+        
+        .quick-action-btn:hover {
+            transform: translateY(-1px);
+            border-color: #e5e7eb;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modern-card {
+            transition: box-shadow 0.2s ease-in-out;
+        }
+        
+        .modern-card:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+    @endpush
+
+    @push('scripts')
+    <script>
+        function showComingSoon(featureName) {
+            document.getElementById('featureName').textContent = featureName + ' Coming Soon';
+            document.getElementById('comingSoonModal').classList.remove('hidden');
+            document.getElementById('comingSoonModal').classList.add('flex');
+        }
+
+        function closeComingSoonModal() {
+            document.getElementById('comingSoonModal').classList.add('hidden');
+            document.getElementById('comingSoonModal').classList.remove('flex');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('comingSoonModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeComingSoonModal();
+            }
+        });
+
+        // Auto-refresh stats every 30 seconds
+        setInterval(function() {
+            // You can add AJAX calls here to refresh statistics
+            console.log('Stats refreshed at: ' + new Date().toLocaleTimeString());
+        }, 30000);
+    </script>
+    @endpush
+</x-modern-layout>
