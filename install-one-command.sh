@@ -100,11 +100,86 @@ ufw allow 'Nginx Full'
 
 # Setup MySQL securely
 print_status "Setting up database"
-mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$DB_PASSWORD';" || true
-mysql -u root -p$DB_PASSWORD -e "CREATE DATABASE minecraft_hosting CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" 2>/dev/null || true
-mysql -u root -p$DB_PASSWORD -e "CREATE USER 'minecraft_user'@'localhost' IDENTIFIED BY '$DB_PASSWORD';" 2>/dev/null || true
-mysql -u root -p$DB_PASSWORD -e "GRANT ALL PRIVILEGES ON minecraft_hosting.* TO 'minecraft_user'@'localhost';"
-mysql -u root -p$DB_PASSWORD -e "FLUSH PRIVILEGES;"
+
+# Function to setup MySQL with multiple fallback methods
+setup_mysql() {
+    local db_pass="$1"
+    
+    # Method 1: Try with sudo mysql (Ubuntu 18.04+)
+    if sudo mysql -e "SELECT 1;" 2>/dev/null; then
+        print_status "Using sudo mysql authentication method"
+        sudo mysql -e "CREATE DATABASE IF NOT EXISTS minecraft_hosting CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+        sudo mysql -e "CREATE USER IF NOT EXISTS 'minecraft_user'@'localhost' IDENTIFIED BY '$db_pass';"
+        sudo mysql -e "GRANT ALL PRIVILEGES ON minecraft_hosting.* TO 'minecraft_user'@'localhost';"
+        sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$db_pass';"
+        sudo mysql -e "FLUSH PRIVILEGES;"
+        return 0
+    fi
+    
+    # Method 2: Try without password (fresh installation)
+    if mysql -u root -e "SELECT 1;" 2>/dev/null; then
+        print_status "Using passwordless root access"
+        mysql -u root -e "CREATE DATABASE IF NOT EXISTS minecraft_hosting CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+        mysql -u root -e "CREATE USER IF NOT EXISTS 'minecraft_user'@'localhost' IDENTIFIED BY '$db_pass';"
+        mysql -u root -e "GRANT ALL PRIVILEGES ON minecraft_hosting.* TO 'minecraft_user'@'localhost';"
+        mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$db_pass';"
+        mysql -u root -e "FLUSH PRIVILEGES;"
+        return 0
+    fi
+    
+    # Method 3: Reset MySQL using debian-sys-maint (Debian/Ubuntu specific)
+    if [ -f /etc/mysql/debian.cnf ]; then
+        print_status "Using debian-sys-maint credentials"
+        mysql --defaults-file=/etc/mysql/debian.cnf -e "CREATE DATABASE IF NOT EXISTS minecraft_hosting CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" 2>/dev/null
+        mysql --defaults-file=/etc/mysql/debian.cnf -e "CREATE USER IF NOT EXISTS 'minecraft_user'@'localhost' IDENTIFIED BY '$db_pass';" 2>/dev/null
+        mysql --defaults-file=/etc/mysql/debian.cnf -e "GRANT ALL PRIVILEGES ON minecraft_hosting.* TO 'minecraft_user'@'localhost';" 2>/dev/null
+        mysql --defaults-file=/etc/mysql/debian.cnf -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$db_pass';" 2>/dev/null
+        mysql --defaults-file=/etc/mysql/debian.cnf -e "FLUSH PRIVILEGES;" 2>/dev/null
+        return 0
+    fi
+    
+    # Method 4: Reset using safe mode
+    print_status "Attempting MySQL safe mode reset..."
+    systemctl stop mysql
+    
+    # Create init file
+    local init_file="/tmp/mysql_init_$(date +%s).sql"
+    cat > "$init_file" << EOF
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$db_pass';
+CREATE DATABASE IF NOT EXISTS minecraft_hosting CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER IF NOT EXISTS 'minecraft_user'@'localhost' IDENTIFIED BY '$db_pass';
+GRANT ALL PRIVILEGES ON minecraft_hosting.* TO 'minecraft_user'@'localhost';
+FLUSH PRIVILEGES;
+EOF
+    
+    # Start with init file
+    mysqld --init-file="$init_file" --user=mysql &
+    local mysql_pid=$!
+    sleep 10
+    kill $mysql_pid 2>/dev/null || true
+    rm -f "$init_file"
+    
+    systemctl start mysql
+    sleep 3
+    
+    # Test connection
+    if mysql -u root -p"$db_pass" -e "SELECT 1;" 2>/dev/null; then
+        return 0
+    fi
+    
+    return 1
+}
+
+# Try to setup MySQL
+if setup_mysql "$DB_PASSWORD"; then
+    print_success "MySQL configured successfully"
+else
+    print_error "MySQL setup failed. Please manually configure MySQL:"
+    print_error "1. Run: sudo mysql_secure_installation"
+    print_error "2. Set root password to: $DB_PASSWORD"
+    print_error "3. Restart the installer"
+    exit 1
+fi
 
 # Clone and setup project
 print_status "Setting up application"

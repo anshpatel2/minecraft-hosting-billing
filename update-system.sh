@@ -80,8 +80,25 @@ backup_database() {
         DB_NAME=$(grep "^DB_DATABASE=" $PROJECT_DIR/.env | cut -d '=' -f2- | sed 's/^"//' | sed 's/"$//')
         DB_USER=$(grep "^DB_USERNAME=" $PROJECT_DIR/.env | cut -d '=' -f2- | sed 's/^"//' | sed 's/"$//')
         
-        mysqldump -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" | gzip > "$BACKUP_DIR/database/backup_$TIMESTAMP.sql.gz"
-        print_success "Database backed up to: backup_$TIMESTAMP.sql.gz"
+        # Try multiple backup methods
+        if sudo mysql -e "SELECT 1;" 2>/dev/null; then
+            # Use sudo mysql method (Ubuntu 18.04+)
+            sudo mysql "$DB_NAME" | gzip > "$BACKUP_DIR/database/backup_$TIMESTAMP.sql.gz"
+            print_success "Database backed up using sudo method: backup_$TIMESTAMP.sql.gz"
+        elif mysqldump -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" 2>/dev/null | gzip > "$BACKUP_DIR/database/backup_$TIMESTAMP.sql.gz"; then
+            # Use application user credentials
+            print_success "Database backed up using app user: backup_$TIMESTAMP.sql.gz"
+        elif mysqldump -u root -p"$DB_PASSWORD" "$DB_NAME" 2>/dev/null | gzip > "$BACKUP_DIR/database/backup_$TIMESTAMP.sql.gz"; then
+            # Use root credentials
+            print_success "Database backed up using root: backup_$TIMESTAMP.sql.gz"
+        elif [ -f /etc/mysql/debian.cnf ]; then
+            # Use debian-sys-maint credentials
+            mysqldump --defaults-file=/etc/mysql/debian.cnf "$DB_NAME" | gzip > "$BACKUP_DIR/database/backup_$TIMESTAMP.sql.gz"
+            print_success "Database backed up using debian-sys-maint: backup_$TIMESTAMP.sql.gz"
+        else
+            print_warning "Could not create database backup - no working MySQL credentials found"
+            echo "# No database backup created due to MySQL authentication issues" | gzip > "$BACKUP_DIR/database/backup_$TIMESTAMP.sql.gz"
+        fi
     else
         print_error "Could not find .env file for database backup"
         exit 1

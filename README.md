@@ -235,6 +235,8 @@ sudo systemctl status mysql
 # Verify credentials in /var/www/minecraft-hosting-billing/.env
 ```
 
+**📚 For detailed MySQL troubleshooting**: See [MYSQL-TROUBLESHOOTING.md](MYSQL-TROUBLESHOOTING.md)
+
 **🔒 SSL Certificate Issues**
 ```bash
 # Renew SSL certificate
