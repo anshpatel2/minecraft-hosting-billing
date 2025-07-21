@@ -106,4 +106,3 @@ Route::middleware(['auth', 'verified', 'role:Customer,Reseller,Admin'])->prefix(
 });
 
 require __DIR__.'/auth.php';
-require __DIR__.'/auth.php';

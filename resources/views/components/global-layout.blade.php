@@ -325,7 +325,7 @@
                     font-size: 0.8rem;
                 }
             }
-        </style>
+        
             
             .admin-info-item {
                 @apply space-y-2;

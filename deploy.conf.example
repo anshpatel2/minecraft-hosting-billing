@@ -1,0 +1,79 @@
+# =================================================================
+# Minecraft Hosting Billing - Deployment Configuration
+# =================================================================
+# Copy this file to deploy.conf and customize your settings
+# Usage: bash deploy.sh --config deploy.conf
+# =================================================================
+
+# Domain Configuration
+DOMAIN="hosting.example.com"
+EMAIL="admin@example.com"
+
+# Admin User Configuration
+ADMIN_NAME="Administrator"
+ADMIN_EMAIL="admin@hosting.example.com"
+ADMIN_PASSWORD=""  # Leave empty for auto-generated password
+
+# Database Configuration
+DB_NAME="minecraft_hosting"
+DB_USER="minecraft_user"
+DB_PASSWORD=""  # Leave empty for auto-generated password
+
+# Application Configuration
+APP_NAME="minecraft-hosting-billing"
+APP_ENV="production"
+APP_DEBUG="false"
+PROJECT_DIR="/var/www/minecraft-hosting-billing"
+
+# Repository Configuration
+REPOSITORY_URL="https://github.com/anshpatel2/minecraft-hosting-billing.git"
+REPOSITORY_BRANCH="main"
+
+# SSL Configuration
+SSL_EMAIL=""  # Will use EMAIL if empty
+USE_CLOUDFLARE="false"  # Set to true if using Cloudflare
+
+# Server Configuration
+PHP_VERSION="8.2"
+NGINX_WORKER_PROCESSES="auto"
+NGINX_WORKER_CONNECTIONS="1024"
+
+# Database Optimization
+MYSQL_INNODB_BUFFER_POOL_SIZE="256M"
+MYSQL_MAX_CONNECTIONS="100"
+
+# PHP-FPM Configuration
+PHP_FPM_MAX_CHILDREN="50"
+PHP_FPM_START_SERVERS="5"
+PHP_FPM_MIN_SPARE_SERVERS="5"
+PHP_FPM_MAX_SPARE_SERVERS="35"
+
+# Backup Configuration
+BACKUP_RETENTION_DAYS="7"
+BACKUP_DIRECTORY="/var/backups/minecraft-hosting"
+
+# Mail Configuration (Optional - for notifications)
+MAIL_MAILER="smtp"
+MAIL_HOST="smtp.gmail.com"
+MAIL_PORT="587"
+MAIL_USERNAME=""
+MAIL_PASSWORD=""
+MAIL_ENCRYPTION="tls"
+
+# Additional Features
+ENABLE_REDIS="true"
+ENABLE_QUEUE_WORKER="true"
+ENABLE_SCHEDULER="true"
+ENABLE_MONITORING="true"
+ENABLE_FAIL2BAN="true"
+ENABLE_BACKUPS="true"
+
+# Security Configuration
+ENABLE_FIREWALL="true"
+SSH_PORT="22"
+ALLOWED_IPS=""  # Comma-separated list of IPs to whitelist (optional)
+
+# Performance Optimization
+ENABLE_OPCACHE="true"
+ENABLE_GZIP="true"
+ENABLE_HTTP2="true"

@@ -22,3 +22,31 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Deployment files (keep tracked)
+# install-one-command.sh
+# update-system.sh
+# deploy.sh
+# quick-deploy.sh
+# docker-deploy.sh
+# docker-compose.yml
+# DEPLOYMENT.md
+# version.json
+
+# Local deployment configs
+deploy.conf
+.installation-info
+
+# Deployment files (keep tracked)
+# install-one-command.sh
+# update-system.sh
+# deploy.sh
+# quick-deploy.sh
+# docker-deploy.sh
+# docker-compose.yml
+# DEPLOYMENT.md
+# version.json
+
+# Local deployment configs
+deploy.conf
+.installation-info

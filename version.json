@@ -1,0 +1,29 @@
+{
+  "version": "1.0.0",
+  "release_date": "2025-07-21",
+  "changelog": [
+    "Initial release with one-command installation",
+    "Complete hosting platform setup",
+    "Automatic SSL certificate generation", 
+    "Admin user creation",
+    "Database setup and migrations",
+    "Queue workers and background jobs",
+    "Automated backup system",
+    "Smart update system with rollback",
+    "Security hardening and firewall setup"
+  ],
+  "requirements": {
+    "php": ">=8.2",
+    "mysql": ">=8.0",
+    "nginx": ">=1.18",
+    "os": ["ubuntu-20.04", "ubuntu-22.04", "debian-11", "debian-12"]
+  },
+  "installation": {
+    "one_command": "curl -fsSL https://raw.githubusercontent.com/anshpatel2/minecraft-hosting-billing/main/install-one-command.sh | sudo bash -s -- yourdomain.com your@email.com"
+  },
+  "update": {
+    "command": "sudo minecraft-hosting-update",
+    "backup": "automatic",
+    "rollback": "supported"
+  }
+}

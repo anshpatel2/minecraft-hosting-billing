@@ -433,6 +433,104 @@
                 box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
             }
 
+            /* User Dropdown */
+            .user-dropdown {
+                position: absolute;
+                top: calc(100% + 8px);
+                right: 0;
+                width: 280px;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(20px);
+                border-radius: 16px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1), 0 8px 25px rgba(0, 0, 0, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                z-index: 1000;
+                overflow: hidden;
+            }
+
+            .user-dropdown-header {
+                padding: 20px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .user-dropdown-avatar {
+                width: 48px;
+                height: 48px;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 700;
+                font-size: 18px;
+            }
+
+            .user-dropdown-info {
+                flex: 1;
+            }
+
+            .user-dropdown-name {
+                font-weight: 600;
+                font-size: 14px;
+                margin: 0 0 4px 0;
+            }
+
+            .user-dropdown-email {
+                font-size: 12px;
+                opacity: 0.9;
+                margin: 0 0 8px 0;
+            }
+
+            .user-dropdown-role {
+                background: rgba(255, 255, 255, 0.2);
+                padding: 4px 12px;
+                border-radius: 20px;
+                font-size: 11px;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .user-dropdown-content {
+                padding: 8px;
+            }
+
+            .user-dropdown-link {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 12px 16px;
+                color: #374151;
+                text-decoration: none;
+                border-radius: 8px;
+                transition: all 0.2s ease;
+                width: 100%;
+                border: none;
+                background: none;
+                font-family: inherit;
+                font-size: 14px;
+                cursor: pointer;
+            }
+
+            .user-dropdown-link:hover {
+                background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+                color: #1f2937;
+                transform: translateX(4px);
+            }
+
+            .user-dropdown-link i {
+                width: 16px;
+                color: #6b7280;
+            }
+
+            .user-dropdown-link:hover i {
+                color: #374151;
+            }
+
             /* Main Content */
             .main-content {
                 grid-area: main;
@@ -1570,6 +1668,47 @@
                             <button @click="open = !open" class="user-avatar">
                                 {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                             </button>
+                            
+                            <!-- Dropdown Menu -->
+                            <div x-show="open" @click.away="open = false" 
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="transform opacity-0 scale-95 translate-y-2"
+                                 x-transition:enter-end="transform opacity-100 scale-100 translate-y-0"
+                                 x-transition:leave="transition ease-in duration-150"
+                                 x-transition:leave-start="transform opacity-100 scale-100"
+                                 x-transition:leave-end="transform opacity-0 scale-95"
+                                 class="user-dropdown">
+                                
+                                <div class="user-dropdown-header">
+                                    <div class="user-dropdown-avatar">
+                                        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                    </div>
+                                    <div class="user-dropdown-info">
+                                        <p class="user-dropdown-name">{{ Auth::user()->name }}</p>
+                                        <p class="user-dropdown-email">{{ Auth::user()->email }}</p>
+                                        @if(Auth::user()->roles->first())
+                                            <span class="user-dropdown-role">
+                                                {{ ucfirst(Auth::user()->roles->first()->name) }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                                
+                                <div class="user-dropdown-content">
+                                    <a href="{{ route('profile.edit') }}" class="user-dropdown-link">
+                                        <i class="fas fa-user"></i>
+                                        <span>Profile Settings</span>
+                                    </a>
+                                    
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="user-dropdown-link">
+                                            <i class="fas fa-sign-out-alt"></i>
+                                            <span>Sign Out</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                         @endauth
                     </div>
