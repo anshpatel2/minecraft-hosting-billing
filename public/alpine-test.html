@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Alpine.js Test</title>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body>
+    <div x-data="{ open: false }">
+        <button @click="open = !open">Toggle Dropdown</button>
+        <div x-show="open" @click.away="open = false">
+            <p>This is a dropdown!</p>
+            <p>x-show value: <span x-text="open"></span></p>
+        </div>
+    </div>
+</body>
+</html>

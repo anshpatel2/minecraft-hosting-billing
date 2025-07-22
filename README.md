@@ -219,6 +219,20 @@ The platform comes pre-optimized with:
 
 ## 🆘 **Troubleshooting**
 
+### Quick Fix Scripts
+
+**🔧 Complete Troubleshooter (Recommended)**
+```bash
+# Download and run the complete troubleshooter
+curl -fsSL https://raw.githubusercontent.com/anshpatel2/minecraft-hosting-billing/main/troubleshoot.sh | sudo bash
+```
+
+**🔑 Laravel Key Generation Error Fix**
+```bash
+# If you get "file_put_contents(.env): Permission denied"
+curl -fsSL https://raw.githubusercontent.com/anshpatel2/minecraft-hosting-billing/main/fix-laravel-key.sh | sudo bash
+```
+
 ### Common Issues
 
 **🚫 502 Bad Gateway Error**
