@@ -59,13 +59,16 @@ print_success "Basic permissions fixed"
 # Fix 2: .env File Permissions
 print_status "Fixing .env file permissions..."
 if [ -f .env ]; then
-    cp .env .env.backup.$(date +%Y%m%d%H%M%S)
-    print_warning "Existing .env file backed up as .env.backup.$(date +%Y%m%d%H%M%S)"
-    rm .env
+    print_status "Backing up current .env..."
+    cp .env .env.backup.$(date +%s)
 fi
-cp .env.example .env
+
+# Remove and recreate .env with proper permissions
+rm -f .env
+sudo -u www-data cp .env.example .env
 chown www-data:www-data .env
 chmod 664 .env
+
 print_success ".env file permissions fixed"
 
 # Fix 3: Laravel Key Generation

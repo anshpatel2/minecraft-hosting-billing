@@ -57,6 +57,37 @@ DB_PASSWORD=$(openssl rand -base64 16 | tr -d "=+/")
 ADMIN_PASSWORD=$(openssl rand -base64 16 | tr -d "=+/")
 INSTALL_ID=$(date +%s)
 
+# Function to fix Laravel permissions
+fix_laravel_permissions() {
+    print_status "Applying Laravel permission fixes..."
+    
+    # Set ownership to www-data
+    chown -R www-data:www-data .
+    
+    # Set base permissions
+    find . -type f -exec chmod 644 {} \;
+    find . -type d -exec chmod 755 {} \;
+    
+    # Set writable directories
+    chmod -R 775 storage bootstrap/cache
+    
+    # Set executable permissions for artisan
+    chmod 755 artisan
+    
+    # Ensure .env files have correct permissions
+    if [ -f .env.example ]; then
+        chmod 644 .env.example
+        chown www-data:www-data .env.example
+    fi
+    
+    if [ -f .env ]; then
+        chmod 664 .env
+        chown www-data:www-data .env
+    fi
+    
+    print_success "Laravel permissions applied"
+}
+
 print_header "Starting deployment for $DOMAIN..."
 
 # Update system
@@ -189,9 +220,7 @@ git clone https://github.com/anshpatel2/minecraft-hosting-billing.git
 cd minecraft-hosting-billing
 
 # Set permissions
-chown -R www-data:www-data .
-chmod -R 755 .
-chmod -R 775 storage bootstrap/cache
+fix_laravel_permissions
 
 # Install dependencies
 print_status "Installing PHP dependencies"
@@ -199,8 +228,25 @@ sudo -u www-data composer install --no-dev --optimize-autoloader --quiet
 
 # Setup environment
 print_status "Configuring environment"
-cp .env.example .env
+
+# Create .env file with proper permissions from the start
+sudo -u www-data cp .env.example .env
+chown www-data:www-data .env
+chmod 664 .env
+
+# Generate application key as www-data user
 sudo -u www-data php artisan key:generate --force
+
+# Verify key generation succeeded
+if grep -q "APP_KEY=base64:" .env; then
+    print_success "Application key generated successfully"
+else
+    print_error "Application key generation failed"
+    print_error "Attempting manual fix..."
+    chown www-data:www-data .env
+    chmod 664 .env
+    sudo -u www-data php artisan key:generate --force
+fi
 
 # Configure .env
 sed -i "s|^APP_NAME=.*|APP_NAME=\"Minecraft Hosting Billing\"|" .env
@@ -214,6 +260,10 @@ sed -i "s|^CACHE_DRIVER=.*|CACHE_DRIVER=redis|" .env
 sed -i "s|^SESSION_DRIVER=.*|SESSION_DRIVER=redis|" .env
 sed -i "s|^QUEUE_CONNECTION=.*|QUEUE_CONNECTION=redis|" .env
 sed -i "s|^MAIL_FROM_ADDRESS=.*|MAIL_FROM_ADDRESS=$EMAIL|" .env
+
+# Ensure .env permissions are still correct after modifications
+chown www-data:www-data .env
+chmod 664 .env
 
 # Run migrations and setup
 print_status "Setting up database"
@@ -411,6 +461,11 @@ LAST_UPDATE=$(date)
 EOF
 
 # Restart services
+print_status "Applying final permission fixes..."
+cd /var/www/minecraft-hosting-billing
+fix_laravel_permissions
+
+print_status "Restarting services..."
 supervisorctl reread
 supervisorctl update
 supervisorctl start minecraft-hosting-worker:*
