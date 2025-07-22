@@ -232,6 +232,7 @@ sudo systemctl restart php8.2-fpm
 ```bash
 # Check MySQL status
 sudo systemctl status mysql
+
 # Verify credentials in /var/www/minecraft-hosting-billing/.env
 ```
 
