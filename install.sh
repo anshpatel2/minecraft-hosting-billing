@@ -220,6 +220,7 @@ sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/" .env
 
 # Test Laravel database connection
 print_status "Testing Laravel database connection"
+# Only clear config, not cache (cache table doesn't exist yet)
 sudo -u www-data php artisan config:clear
 # Add a retry mechanism for database connection
 for i in {1..3}; do
@@ -254,9 +255,8 @@ done
 
 # Run database migrations
 print_status "🗄️ Setting up database"
-# Clear any existing migration conflicts
+# Clear config cache first (this doesn't require database)
 sudo -u www-data php artisan config:clear
-sudo -u www-data php artisan cache:clear
 
 # Try fresh migration first (drops all tables and recreates)
 if sudo -u www-data php artisan migrate:fresh --force --seed; then
@@ -269,6 +269,9 @@ else
     sudo -u www-data php artisan db:seed --force
     print_success "Database setup completed with reset method"
 fi
+
+# Now clear all caches after tables exist
+sudo -u www-data php artisan cache:clear 2>/dev/null || true
 
 # Configure Nginx
 print_status "🌐 Configuring web server"
