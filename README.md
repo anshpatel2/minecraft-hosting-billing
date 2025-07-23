@@ -3,12 +3,18 @@
 Deploy a complete, production-ready Minecraft server hosting and billing platform in under 5 minutes with a single command!
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![PHP](https://img.shields.io/badge/PHP-8.2+-brightgreen.svg)
+![PHP](https://img.shields.io/badge/PHP-8.1+-brightgreen.svg)
 ![Laravel](https://img.shields.io/badge/Laravel-10+-red.svg)
 ![MySQL](https://img.shields.io/badge/MySQL-8.0+-orange.svg)
 
 ## ⚡ **One-Command Installation**
 
+### **Interactive Installation:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/anshpatel2/minecraft-hosting-billing/main/install.sh | sudo bash
+```
+
+### **Automated Installation:**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/anshpatel2/minecraft-hosting-billing/main/install.sh | sudo bash -s -- yourdomain.com your@email.com
 ```
@@ -25,8 +31,8 @@ curl -fsSL https://raw.githubusercontent.com/anshpatel2/minecraft-hosting-billin
 ✅ **Database & Caching** - MySQL + Redis configured and optimized  
 ✅ **Background Workers** - Queue processing for server provisioning  
 ✅ **Security Hardened** - Firewall, fail2ban, secure headers  
-✅ **Automated Backups** - Daily backups with retention policies  
-✅ **Zero-Downtime Updates** - Smart update system with rollback  
+✅ **Smart PHP Detection** - Automatically uses PHP 8.1, 8.2, or 8.3  
+✅ **Robust Error Handling** - Installation succeeds on first try  
 
 ## 🖥️ **System Requirements**
 
@@ -39,14 +45,62 @@ curl -fsSL https://raw.githubusercontent.com/anshpatel2/minecraft-hosting-billin
 
 ## 🚀 **Quick Start Guide**
 
-### 1. **Prepare Your Server**
-- Get a fresh VPS (DigitalOcean, Linode, AWS, etc.)
-- Point your domain's DNS to the server's IP
+### 1. **Get a VPS**
+- Any Ubuntu VPS from DigitalOcean, Linode, AWS, Vultr, etc.
+- Point your domain's DNS A record to the server's IP
 - SSH into your server as root
 
 ### 2. **Run the Installation Command**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/anshpatel2/minecraft-hosting-billing/main/install.sh | sudo bash -s -- yourdomain.com your@email.com
+```
+
+### 3. **Wait 5 Minutes**
+The script will automatically:
+- Install and configure all required packages
+- Set up MySQL database with secure passwords
+- Configure Nginx with SSL certificate
+- Deploy the Laravel application
+- Create admin user and provide login credentials
+
+### 4. **Access Your Platform**
+- Visit `https://yourdomain.com` 
+- Login with the provided admin credentials
+- Start configuring your hosting packages!
+
+## 🛠️ **Post-Installation**
+
+After installation, you'll receive:
+- 🌐 **Website URL**: `https://yourdomain.com`
+- 📧 **Admin Email**: Your provided email
+- 🔑 **Admin Password**: Auto-generated secure password
+- 🗄️ **Database Password**: Auto-generated secure password
+- 🔑 **MySQL Root Password**: Auto-generated secure password
+
+**⚠️ Important**: Save all passwords shown at the end of installation!
+
+## 🔄 **Management Commands**
+
+### **Update Your Platform:**
+```bash
+sudo minecraft-hosting-update
+```
+
+### **View Application Logs:**
+```bash
+tail -f /var/www/minecraft-hosting-billing/storage/logs/laravel.log
+```
+
+### **Restart Services:**
+```bash
+sudo systemctl restart nginx php-fpm mysql redis-server
+```
+
+### **Check Service Status:**
+```bash
+sudo systemctl status nginx
+sudo systemctl status mysql
+sudo systemctl status redis-server
 ```
 
 ### 3. **Access Your Platform**
