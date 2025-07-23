@@ -168,8 +168,21 @@ sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/" .env
 
 # Run database migrations
 print_status "🗄️ Setting up database"
-sudo -u www-data php artisan migrate --force
-sudo -u www-data php artisan db:seed --force
+# Clear any existing migration conflicts
+sudo -u www-data php artisan config:clear
+sudo -u www-data php artisan cache:clear
+
+# Try fresh migration first (drops all tables and recreates)
+if sudo -u www-data php artisan migrate:fresh --force --seed; then
+    print_success "Database setup completed with fresh migration"
+else
+    print_warning "Fresh migration failed, trying reset method..."
+    # Fallback: reset and migrate
+    sudo -u www-data php artisan migrate:reset --force 2>/dev/null || true
+    sudo -u www-data php artisan migrate --force
+    sudo -u www-data php artisan db:seed --force
+    print_success "Database setup completed with reset method"
+fi
 
 # Configure Nginx
 print_status "🌐 Configuring web server"
