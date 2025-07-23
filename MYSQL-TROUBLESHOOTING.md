@@ -2,6 +2,40 @@
 
 This guide helps resolve common MySQL issues during installation.
 
+## SQLite Driver Error (could not find driver)
+
+### Error: "could not find driver (Connection: sqlite)"
+
+This error occurs when Laravel is trying to use SQLite instead of MySQL. This has been fixed in the project configuration, but if you encounter this error:
+
+1. **Ensure your `.env` file has MySQL configuration:**
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=minecraft_hosting
+   DB_USERNAME=root
+   DB_PASSWORD=your_password
+   ```
+
+2. **If you copied an old `.env.example`, recreate it:**
+   ```bash
+   rm .env
+   cp .env.example .env
+   ```
+
+3. **Clear Laravel configuration cache:**
+   ```bash
+   php artisan config:clear
+   php artisan cache:clear
+   ```
+
+4. **Make sure MySQL is running:**
+   ```bash
+   sudo systemctl status mysql
+   sudo systemctl start mysql  # if not running
+   ```
+
 ## Common MySQL Authentication Errors
 
 ### Error: Access denied for user 'root'@'localhost'
