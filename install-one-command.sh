@@ -96,21 +96,43 @@ export DEBIAN_FRONTEND=noninteractive
 apt update -qq
 apt upgrade -y -qq
 
+# Add PHP repository for PHP 8.2+
+print_status "Adding PHP repository"
+apt install -y -qq software-properties-common
+add-apt-repository -y ppa:ondrej/php
+apt update -qq
+
+# Detect available PHP version (fallback mechanism)
+print_status "Detecting available PHP version"
+if apt-cache show php8.2-fpm >/dev/null 2>&1; then
+    PHP_VERSION="8.2"
+    print_success "Using PHP 8.2"
+elif apt-cache show php8.1-fpm >/dev/null 2>&1; then
+    PHP_VERSION="8.1"
+    print_warning "PHP 8.2 not available, falling back to PHP 8.1"
+elif apt-cache show php8.0-fpm >/dev/null 2>&1; then
+    PHP_VERSION="8.0"
+    print_warning "PHP 8.2/8.1 not available, falling back to PHP 8.0"
+else
+    print_error "No suitable PHP version found!"
+    exit 1
+fi
+
 # Install essential packages
 print_status "Installing required packages"
 apt install -y -qq \
     nginx \
     mysql-server \
-    php8.2-fpm \
-    php8.2-mysql \
-    php8.2-xml \
-    php8.2-curl \
-    php8.2-mbstring \
-    php8.2-zip \
-    php8.2-gd \
-    php8.2-bcmath \
-    php8.2-intl \
-    php8.2-cli \
+    php${PHP_VERSION}-fpm \
+    php${PHP_VERSION}-mysql \
+    php${PHP_VERSION}-xml \
+    php${PHP_VERSION}-curl \
+    php${PHP_VERSION}-mbstring \
+    php${PHP_VERSION}-zip \
+    php${PHP_VERSION}-gd \
+    php${PHP_VERSION}-bcmath \
+    php${PHP_VERSION}-intl \
+    php${PHP_VERSION}-cli \
     composer \
     git \
     curl \
@@ -318,7 +340,7 @@ server {
     }
 
     location ~ \.php$ {
-        fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php${PHP_VERSION}-fpm.sock;
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME \$realpath_root\$fastcgi_script_name;
         include fastcgi_params;
@@ -440,7 +462,7 @@ sudo -u www-data php artisan up
 
 # Restart services
 print_status "Restarting services..."
-systemctl restart php8.2-fpm
+systemctl restart php${PHP_VERSION}-fpm
 supervisorctl restart minecraft-hosting-worker:*
 
 print_success "Update completed successfully!"
@@ -470,7 +492,7 @@ supervisorctl reread
 supervisorctl update
 supervisorctl start minecraft-hosting-worker:*
 systemctl restart nginx
-systemctl restart php8.2-fpm
+systemctl restart php${PHP_VERSION}-fpm
 systemctl restart redis-server
 
 # Final banner
@@ -493,7 +515,7 @@ print_warning "⚠️  SAVE THESE CREDENTIALS SECURELY!"
 echo
 print_status "📖 View logs: tail -f /var/www/minecraft-hosting-billing/storage/logs/laravel.log"
 print_status "🔄 Update anytime: sudo minecraft-hosting-update"
-print_status "🔧 Restart services: sudo systemctl restart nginx php8.2-fpm"
+print_status "🔧 Restart services: sudo systemctl restart nginx php${PHP_VERSION}-fpm"
 echo
 print_success "🎯 Installation ID: $INSTALL_ID"
 print_success "✨ Ready to host Minecraft servers!"

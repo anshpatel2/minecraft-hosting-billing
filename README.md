@@ -10,7 +10,7 @@ Deploy a complete, production-ready Minecraft server hosting and billing platfor
 ## ⚡ **One-Command Installation**
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/anshpatel2/minecraft-hosting-billing/main/install-one-command.sh | sudo bash -s -- yourdomain.com your@email.com
+curl -fsSL https://raw.githubusercontent.com/anshpatel2/minecraft-hosting-billing/main/install.sh | sudo bash -s -- yourdomain.com your@email.com
 ```
 
 **That's it!** Your complete Minecraft hosting platform will be ready at `https://yourdomain.com` in under 5 minutes.
@@ -30,7 +30,7 @@ curl -fsSL https://raw.githubusercontent.com/anshpatel2/minecraft-hosting-billin
 
 ## 🖥️ **System Requirements**
 
-- **Operating System**: Ubuntu 20.04+ or Debian 11+
+- **Operating System**: Ubuntu 18.04, 20.04, 22.04, or 24.04
 - **RAM**: 2GB minimum (4GB recommended for production)
 - **Storage**: 20GB minimum (SSD recommended)
 - **Network**: Public IP with ports 80/443 accessible
@@ -46,7 +46,7 @@ curl -fsSL https://raw.githubusercontent.com/anshpatel2/minecraft-hosting-billin
 
 ### 2. **Run the Installation Command**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/anshpatel2/minecraft-hosting-billing/main/install-one-command.sh | sudo bash -s -- yourdomain.com your@email.com
+curl -fsSL https://raw.githubusercontent.com/anshpatel2/minecraft-hosting-billing/main/install.sh | sudo bash -s -- yourdomain.com your@email.com
 ```
 
 ### 3. **Access Your Platform**
