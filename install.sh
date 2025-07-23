@@ -94,26 +94,32 @@ fi
 
 # Install packages
 print_status "📦 Installing required packages"
-apt install -y -qq \
-    nginx \
-    mysql-server \
-    php${PHP_VERSION}-fpm \
-    php${PHP_VERSION}-mysql \
-    php${PHP_VERSION}-xml \
-    php${PHP_VERSION}-curl \
-    php${PHP_VERSION}-mbstring \
-    php${PHP_VERSION}-zip \
-    php${PHP_VERSION}-gd \
-    php${PHP_VERSION}-bcmath \
-    php${PHP_VERSION}-intl \
-    php${PHP_VERSION}-cli \
-    composer \
-    certbot \
-    python3-certbot-nginx \
-    redis-server \
-    supervisor \
-    fail2ban \
-    ufw
+# Install in stages to handle any package conflicts
+apt install -y -qq nginx mysql-server
+apt install -y -qq php${PHP_VERSION}-fpm php${PHP_VERSION}-mysql php${PHP_VERSION}-xml php${PHP_VERSION}-curl
+apt install -y -qq php${PHP_VERSION}-mbstring php${PHP_VERSION}-zip php${PHP_VERSION}-gd php${PHP_VERSION}-bcmath
+apt install -y -qq php${PHP_VERSION}-intl php${PHP_VERSION}-cli
+apt install -y -qq composer git curl wget unzip
+apt install -y -qq certbot python3-certbot-nginx
+apt install -y -qq redis-server supervisor fail2ban ufw
+
+# Verify critical packages are installed
+if ! command -v nginx >/dev/null; then
+    print_error "Nginx installation failed"
+    exit 1
+fi
+
+if ! command -v mysql >/dev/null; then
+    print_error "MySQL installation failed"
+    exit 1
+fi
+
+if ! command -v "php${PHP_VERSION}" >/dev/null; then
+    print_error "PHP ${PHP_VERSION} installation failed"
+    exit 1
+fi
+
+print_success "All packages installed successfully"
 
 # Configure firewall
 print_status "🔒 Configuring firewall"
@@ -124,11 +130,57 @@ ufw allow 443
 
 # Configure MySQL
 print_status "🗄️ Configuring MySQL"
-mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$MYSQL_ROOT_PASSWORD';" 2>/dev/null || true
-mysql -u root -p$MYSQL_ROOT_PASSWORD -e "CREATE DATABASE IF NOT EXISTS minecraft_hosting CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-mysql -u root -p$MYSQL_ROOT_PASSWORD -e "CREATE USER IF NOT EXISTS 'minecraft_user'@'localhost' IDENTIFIED BY '$DB_PASSWORD';"
-mysql -u root -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON minecraft_hosting.* TO 'minecraft_user'@'localhost';"
-mysql -u root -p$MYSQL_ROOT_PASSWORD -e "FLUSH PRIVILEGES;"
+# Ensure MySQL is running
+systemctl enable mysql
+systemctl start mysql
+sleep 5
+
+# Secure MySQL installation and set root password
+print_status "Securing MySQL installation"
+# First, try without password (fresh install)
+mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$MYSQL_ROOT_PASSWORD'; FLUSH PRIVILEGES;" 2>/dev/null || \
+# If that fails, try with empty password
+mysql -u root -p'' -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$MYSQL_ROOT_PASSWORD'; FLUSH PRIVILEGES;" 2>/dev/null || \
+# If that fails, MySQL might already have a password set
+mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "SELECT 1;" 2>/dev/null || {
+    print_warning "MySQL root password setup may have failed. Continuing with database creation..."
+}
+
+# Create database and user with better error handling
+print_status "Creating database and user"
+mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "
+SET sql_mode = '';
+DROP DATABASE IF EXISTS minecraft_hosting;
+CREATE DATABASE minecraft_hosting CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+DROP USER IF EXISTS 'minecraft_user'@'localhost';
+CREATE USER 'minecraft_user'@'localhost' IDENTIFIED BY '$DB_PASSWORD';
+GRANT ALL PRIVILEGES ON minecraft_hosting.* TO 'minecraft_user'@'localhost';
+FLUSH PRIVILEGES;
+" 2>/dev/null || {
+    # Fallback: try without password or with common default passwords
+    print_warning "Trying alternative MySQL root access methods..."
+    mysql -u root -e "
+    SET sql_mode = '';
+    DROP DATABASE IF EXISTS minecraft_hosting;
+    CREATE DATABASE minecraft_hosting CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+    DROP USER IF EXISTS 'minecraft_user'@'localhost';
+    CREATE USER 'minecraft_user'@'localhost' IDENTIFIED BY '$DB_PASSWORD';
+    GRANT ALL PRIVILEGES ON minecraft_hosting.* TO 'minecraft_user'@'localhost';
+    FLUSH PRIVILEGES;
+    " 2>/dev/null || {
+        print_error "Failed to configure MySQL. Please check MySQL installation."
+        exit 1
+    }
+}
+
+# Test the connection
+print_status "Testing database connection"
+mysql -u minecraft_user -p"$DB_PASSWORD" -e "USE minecraft_hosting; SELECT 1 as test;" || {
+    print_error "Failed to connect to database with minecraft_user"
+    exit 1
+}
+
+print_success "MySQL configured successfully"
 
 # Clone repository
 print_status "📥 Downloading application"
@@ -165,6 +217,40 @@ sed -i "s/^DB_PORT=.*/DB_PORT=3306/" .env
 sed -i "s/^DB_DATABASE=.*/DB_DATABASE=minecraft_hosting/" .env
 sed -i "s/^DB_USERNAME=.*/DB_USERNAME=minecraft_user/" .env
 sed -i "s/^DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/" .env
+
+# Test Laravel database connection
+print_status "Testing Laravel database connection"
+sudo -u www-data php artisan config:clear
+# Add a retry mechanism for database connection
+for i in {1..3}; do
+    if sudo -u www-data php -r "
+require 'vendor/autoload.php';
+\$app = require_once 'bootstrap/app.php';
+\$app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
+try {
+    \$pdo = DB::connection()->getPdo();
+    if (\$pdo) {
+        echo 'Database connection successful';
+        exit(0);
+    }
+} catch (Exception \$e) {
+    echo 'Database connection failed: ' . \$e->getMessage();
+    exit(1);
+}
+"; then
+        print_success "Laravel database connection verified"
+        break
+    else
+        if [ $i -eq 3 ]; then
+            print_error "Laravel cannot connect to database after 3 attempts"
+            print_status "Checking .env file configuration..."
+            cat .env | grep -E "^DB_"
+            exit 1
+        fi
+        print_warning "Database connection attempt $i failed, retrying in 5 seconds..."
+        sleep 5
+    fi
+done
 
 # Run database migrations
 print_status "🗄️ Setting up database"
@@ -215,7 +301,14 @@ EOF
 # Enable site
 ln -sf /etc/nginx/sites-available/minecraft-hosting /etc/nginx/sites-enabled/
 rm -f /etc/nginx/sites-enabled/default
-nginx -t
+
+# Test nginx configuration
+if nginx -t; then
+    print_success "Nginx configuration is valid"
+else
+    print_error "Nginx configuration is invalid"
+    exit 1
+fi
 
 # Configure queue worker
 print_status "⚡ Configuring queue worker"
@@ -233,24 +326,75 @@ EOF
 
 # Start services
 print_status "🚀 Starting services"
+systemctl enable nginx
 systemctl restart nginx
+systemctl enable php${PHP_VERSION}-fpm
 systemctl restart php${PHP_VERSION}-fpm
+systemctl enable mysql
 systemctl restart mysql
+systemctl enable redis-server
 systemctl restart redis-server
+systemctl enable supervisor
+systemctl restart supervisor
+
+# Wait for services to start
+sleep 5
+
+# Verify services are running
+services_failed=()
+for service in nginx "php${PHP_VERSION}-fpm" mysql redis-server supervisor; do
+    if ! systemctl is-active --quiet "$service"; then
+        services_failed+=("$service")
+    fi
+done
+
+if [ ${#services_failed[@]} -gt 0 ]; then
+    print_error "Failed to start services: ${services_failed[*]}"
+    for service in "${services_failed[@]}"; do
+        print_status "Checking $service status:"
+        systemctl status "$service" --no-pager -l
+    done
+    exit 1
+fi
+
+# Configure supervisor for queue worker
 supervisorctl reread
 supervisorctl update
-supervisorctl start minecraft-hosting-worker:*
+supervisorctl start minecraft-hosting-worker:* || print_warning "Queue worker will be configured after first boot"
+
+print_success "All services started successfully"
 
 # Configure SSL
 print_status "🔒 Configuring SSL certificate"
-certbot --nginx -d $DOMAIN --email $EMAIL --agree-tos --non-interactive --redirect
+# Wait for nginx to be fully ready
+sleep 5
+# Test if domain resolves to this server
+if ! ping -c 1 "$DOMAIN" >/dev/null 2>&1; then
+    print_warning "Domain $DOMAIN may not be pointing to this server yet"
+    print_status "You can configure SSL later with: certbot --nginx -d $DOMAIN"
+else
+    # Try to get SSL certificate
+    if certbot --nginx -d "$DOMAIN" --email "$EMAIL" --agree-tos --non-interactive --redirect; then
+        print_success "SSL certificate configured successfully"
+    else
+        print_warning "SSL certificate setup failed. You can configure it later with:"
+        print_status "certbot --nginx -d $DOMAIN --email $EMAIL --agree-tos --redirect"
+    fi
+fi
 
 # Create admin user
 print_status "👤 Creating admin user"
-sudo -u www-data php artisan user:create-admin \
-    --name="Admin" \
-    --email="$EMAIL" \
-    --password="$ADMIN_PASSWORD" 2>/dev/null || true
+# Check if the create-admin command exists
+if sudo -u www-data php artisan list | grep -q "user:create-admin"; then
+    sudo -u www-data php artisan user:create-admin \
+        --name="Admin" \
+        --email="$EMAIL" \
+        --password="$ADMIN_PASSWORD" 2>/dev/null || {
+        print_warning "Admin user creation failed, you can create one manually later"
+    }
+else
+    print_warning "Admin user creation command not found, you can create one manually in the admin panel"
+fi
 
 # Final optimizations
 print_status "⚡ Optimizing application"
